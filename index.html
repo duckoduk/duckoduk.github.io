@@ -1,30 +1,770 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="kor">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>🏍️부릉부릉부릉🏍️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f2f5;
+            background-image: url('Background.png'); /* Add your image URL here */
+            background-size: cover;
+            background-position: center;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .scrollable-section {
+        max-height: 200px; /* Adjust the height as needed */
+        overflow-y: auto;  /* Make it scrollable vertically */
+        padding-right: 10px; /* Space to avoid scrollbar overlap */
+        }
+        #banner {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        #banner img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        h1 {
+            color: #4caf50;
+        }
+        #chapter-selection, #quiz-section {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+        }
+        button {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .custom-checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .custom-checkbox {
+            position: relative;
+            width: 25px;
+            height: 25px;
+            border: 2px solid #4caf50;
+            border-radius: 5px;
+            margin-right: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .custom-checkbox input {
+            opacity: 0;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+        .custom-checkbox input:checked + .custom-checkbox-display {
+            background-color: #4caf50;
+        }
+        .custom-checkbox-display {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .custom-checkbox-display::after {
+            content: "\2713";
+            font-size: 18px;
+            color: white;
+            display: none;
+        }
+        .custom-checkbox input:checked + .custom-checkbox-display::after {
+            display: block;
+        }
+        #progress-text {
+            margin-bottom: 10px;
+        }
+        .progress-bar {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        .progress-bar-fill {
+            height: 20px;
+            width: 0;
+            background-color: #4caf50;
+            transition: width 0.4s ease;
+        }
+        input[type="text"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        #feedback {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        #return-button {
+            margin-top: 20px;
+            display: none;
+        }
+        .switch-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 20px;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+            margin-right: 10px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .switch-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip-text {
+            visibility: hidden;
+            width: 100px;
+            background-color: #4caf50;
+            color: #fff;
+            text-align: center;
+            border-radius: 5px;
+            padding: 5px;
+            position: absolute;
+            bottom: 125%; /* Position above the element */
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 1;
+        }
+
+        .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%; /* Arrow at the bottom of the tooltip */
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #4caf50 transparent transparent transparent;
+        }
+
+        .switch-wrapper:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #4caf50;
+        }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        .dark-mode {
+            background-color: #333;
+            color: #f0f2f5;
+        }
+        .dark-mode #chapter-selection, .dark-mode #quiz-section {
+            background-color: #444;
+            color: #f0f2f5;
+        }
+        .dark-mode button {
+            background-color: #888;
+            color: #f0f2f5;
+        }
+        .dark-mode .slider {
+            background-color: #888;
+        }
+        .dark-mode input:checked + .slider {
+            background-color: #222;
+        }
+        .scrollable-section {
+        max-height: 200px; /* Adjust the height as needed */
+        overflow-y: auto;  /* Make it scrollable vertically */
+        padding-right: 10px; /* Space to avoid scrollbar overlap */
+        }
+    
+        /* Custom scrollbar styling */
+        .scrollable-section::-webkit-scrollbar {
+            width: 8px; /* Width of the scrollbar */
+        }
+    
+        .scrollable-section::-webkit-scrollbar-track {
+            background: #f0f0f0; /* Background of the scrollbar track */
+            border-radius: 10px; /* Rounded edges */
+        }
+    
+        .scrollable-section::-webkit-scrollbar-thumb {
+            background-color: #4caf50; /* Color of the scrollbar thumb */
+            border-radius: 10px; /* Rounded edges */
+            border: 2px solid #f0f0f0; /* Space between scrollbar and thumb */
+        }
+    
+        .scrollable-section::-webkit-scrollbar-thumb:hover {
+            background-color: #45a049; /* Hover effect for the scrollbar thumb */
+        }
+
+
+        a:visited,
+        a:hover,
+        a:active {
+          color: #45a049;
+        }
+
+        a {
+            margin: 0 15px;
+            color: #45a049; /* 링크 색상 */
+            /* text-decoration: none; */
+            font-weight: bold;
+        }
+        /* Slider styling */
+        #waittime-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 8px;
+            background: #ccc;
+            outline: none;
+            opacity: 0.9;
+            border-radius: 5px;
+            transition: opacity 0.2s;
+        }
+
+        #waittime-slider:hover {
+            opacity: 1;
+        }
+
+        #waittime-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #4caf50;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        #waittime-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #4caf50;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+    </style>
 </head>
 <body>
-    <!-- 전체 배경 -->
-    <div style="background-color: black;">
-        <div>
-            <h2>Top 5</h2>
-            
+    <div id="chapter-selection">
+        <!-- <h1>Fill in the Blanks Quiz</h1> -->
+        <div id="banner">
+            <img src="Banner.png" alt="Banner Image"> <!-- Replace 'banner-image.jpg' with your image URL -->
         </div>
-        <h1 style="color:white">당신의 선생님께 투표하세요</h1>
-        <p style="color: white;">자랑하고 싶은 선생님을 입력하세요</p>
-        <input type="text" id="name" placeholder="선생님 성함">
-        <select id="subjects" name="subject">
-            <option value="과목">과목</option>
-            <option value="체육">체육</option>
-            <option value="과학">과학</option>
-            <option value="국어">국어</option>
-            <option value="사회">사회</option>
-            <option value="외국어">외국어</option>
-            <option value="교양">교양</option>
-            <option value="기타">기타</option>
-        </select>
+        <h3>Select Chapters:</h3>
+        <div class="scrollable-section">
+            <div class="custom-checkbox-wrapper">
+                <label class="custom-checkbox">
+                    <input type="checkbox" name="chapter" value="31">
+                    <div class="custom-checkbox-display"></div>
+                </label>
+                <span>Chapter 31</span>
+            </div>
+            <div class="custom-checkbox-wrapper">
+                <label class="custom-checkbox">
+                    <input type="checkbox" name="chapter" value="32">
+                    <div class="custom-checkbox-display"></div>
+                </label>
+                <span>Chapter 32</span>
+            </div>
+            <div class="custom-checkbox-wrapper">
+                <label class="custom-checkbox">
+                    <input type="checkbox" name="chapter" value="33">
+                    <div class="custom-checkbox-display"></div>
+                </label>
+                <span>Chapter 33</span>
+            </div>
+            <div class="custom-checkbox-wrapper">
+                <label class="custom-checkbox">
+                    <input type="checkbox" name="chapter" value="34">
+                    <div class="custom-checkbox-display"></div>
+                </label>
+                <span>Chapter 34</span>
+            </div>
+            <div class="custom-checkbox-wrapper">
+                <label class="custom-checkbox">
+                    <input type="checkbox" name="chapter" value="35">
+                    <div class="custom-checkbox-display"></div>
+                </label>
+                <span>Chapter 35</span>
+            </div>
+            <div class="custom-checkbox-wrapper">
+                <label class="custom-checkbox">
+                    <input type="checkbox" name="chapter" value="36">
+                    <div class="custom-checkbox-display"></div>
+                </label>
+                <span>Chapter 36</span>
+            </div>
+            <div class="custom-checkbox-wrapper">
+                <label class="custom-checkbox">
+                    <input type="checkbox" name="chapter" value="37">
+                    <div class="custom-checkbox-display"></div>
+                </label>
+                <span>Chapter 37</span>
+            </div>
+            <div class="custom-checkbox-wrapper">
+                <label class="custom-checkbox">
+                    <input type="checkbox" name="chapter" value="38">
+                    <div class="custom-checkbox-display"></div>
+                </label>
+                <span>Chapter 38</span>
+            </div>
+            <div class="custom-checkbox-wrapper">
+                <label class="custom-checkbox">
+                    <input type="checkbox" name="chapter" value="39">
+                    <div class="custom-checkbox-display"></div>
+                </label>
+                <span>Chapter 39</span>
+            </div>
+            <div class="custom-checkbox-wrapper">
+                <label class="custom-checkbox">
+                    <input type="checkbox" name="chapter" value="40">
+                    <div class="custom-checkbox-display"></div>
+                </label>
+                <span>Chapter 40</span>
+            </div>
+            <div class="custom-checkbox-wrapper">
+                <label class="custom-checkbox">
+                    <input type="checkbox" name="chapter" value="41">
+                    <div class="custom-checkbox-display"></div>
+                </label>
+                <span>Chapter 41</span>
+            </div>
+            <div class="custom-checkbox-wrapper">
+                <label class="custom-checkbox">
+                    <input type="checkbox" name="chapter" value="42">
+                    <div class="custom-checkbox-display"></div>
+                </label>
+                <span>Chapter 42</span>
+            </div>
+            <div class="custom-checkbox-wrapper">
+                <label class="custom-checkbox">
+                    <input type="checkbox" name="chapter" value="43">
+                    <div class="custom-checkbox-display"></div>
+                </label>
+                <span>Chapter 43</span>
+            </div>
+            <div class="custom-checkbox-wrapper">
+                <label class="custom-checkbox">
+                    <input type="checkbox" name="chapter" value="44">
+                    <div class="custom-checkbox-display"></div>
+                </label>
+                <span>Chapter 44</span>
+            </div>
+            <div class="custom-checkbox-wrapper">
+                <label class="custom-checkbox">
+                    <input type="checkbox" name="chapter" value="45">
+                    <div class="custom-checkbox-display"></div>
+                </label>
+                <span>Chapter 45</span>
+            </div>
+            <div class="custom-checkbox-wrapper">
+                <label class="custom-checkbox">
+                    <input type="checkbox" name="chapter" value="46">
+                    <div class="custom-checkbox-display"></div>
+                </label>
+                <span>Chapter 46</span>
+            </div>
+            <div class="custom-checkbox-wrapper">
+                <label class="custom-checkbox">
+                    <input type="checkbox" name="chapter" value="47">
+                    <div class="custom-checkbox-display"></div>
+                </label>
+                <span>Chapter 47</span>
+            </div>
+            <div class="custom-checkbox-wrapper">
+                <label class="custom-checkbox">
+                    <input type="checkbox" name="chapter" value="48">
+                    <div class="custom-checkbox-display"></div>
+                </label>
+                <span>Chapter 48</span>
+            </div>
+            <div class="custom-checkbox-wrapper">
+                <label class="custom-checkbox">
+                    <input type="checkbox" name="chapter" value="49">
+                    <div class="custom-checkbox-display"></div>
+                </label>
+                <span>Chapter 49</span>
+            </div>
+            <div class="custom-checkbox-wrapper">
+                <label class="custom-checkbox">
+                    <input type="checkbox" name="chapter" value="50">
+                    <div class="custom-checkbox-display"></div>
+                </label>
+                <span>Chapter 50</span>
+            </div>
+            <div class="custom-checkbox-wrapper">
+                <label class="custom-checkbox">
+                    <input type="checkbox" name="chapter" value="51">
+                    <div class="custom-checkbox-display"></div>
+                </label>
+                <span>Chapter 51</span>
+            </div>
+            <div class="custom-checkbox-wrapper">
+                <label class="custom-checkbox">
+                    <input type="checkbox" name="chapter" value="52">
+                    <div class="custom-checkbox-display"></div>
+                </label>
+                <span>Chapter 52</span>
+            </div>
+            <div class="custom-checkbox-wrapper">
+                <label class="custom-checkbox">
+                    <input type="checkbox" name="chapter" value="53">
+                    <div class="custom-checkbox-display"></div>
+                </label>
+                <span>Chapter 53</span>
+            </div>
+            <div class="custom-checkbox-wrapper">
+                <label class="custom-checkbox">
+                    <input type="checkbox" name="chapter" value="54">
+                    <div class="custom-checkbox-display"></div>
+                </label>
+                <span>Chapter 54</span>
+            </div>
+            <div class="custom-checkbox-wrapper">
+                <label class="custom-checkbox">
+                    <input type="checkbox" name="chapter" value="55">
+                    <div class="custom-checkbox-display"></div>
+                </label>
+                <span>Chapter 55</span>
+            </div>
+            <div class="custom-checkbox-wrapper">
+                <label class="custom-checkbox">
+                    <input type="checkbox" name="chapter" value="56">
+                    <div class="custom-checkbox-display"></div>
+                </label>
+                <span>Chapter 56</span>
+            </div>
+            <div class="custom-checkbox-wrapper">
+                <label class="custom-checkbox">
+                    <input type="checkbox" name="chapter" value="57">
+                    <div class="custom-checkbox-display"></div>
+                </label>
+                <span>Chapter 57</span>
+            </div>
+            <div class="custom-checkbox-wrapper">
+                <label class="custom-checkbox">
+                    <input type="checkbox" name="chapter" value="58">
+                    <div class="custom-checkbox-display"></div>
+                </label>
+                <span>Chapter 58</span>
+            </div>
+            <div class="custom-checkbox-wrapper">
+                <label class="custom-checkbox">
+                    <input type="checkbox" name="chapter" value="59">
+                    <div class="custom-checkbox-display"></div>
+                </label>
+                <span>Chapter 59</span>
+            </div>
+            <div class="custom-checkbox-wrapper">
+                <label class="custom-checkbox">
+                    <input type="checkbox" name="chapter" value="60">
+                    <div class="custom-checkbox-display"></div>
+                </label>
+                <span>Chapter 60</span>
+            </div>
+
+        </div>
+        <br>
+        <!-- Add slider section for adjusting waittime -->
+        <div id="slider-section" style="margin-top: 20px;">
+            <label for="waittime-slider" style="font-weight: bold;">Speed (ms): </label>
+            <div style="display: flex; align-items: center;">
+                <input 
+                    type="range" 
+                    id="waittime-slider" 
+                    min="500" 
+                    max="5000" 
+                    step="100" 
+                    value="1500"
+                    style="flex: 1; margin-right: 10px;"
+                >
+                <span id="waittime-display" style="font-weight: bold;">1500 ms</span>
+            </div>
+        </div>
+        <div class="switch-container">
+            <div class="switch-wrapper">
+                <label class="switch">
+                    <input type="checkbox" id="slow-mode" name="slow-mode">
+                    <span class="slider"></span>
+                </label>
+                <span class="tooltip-text">하남자?</span>
+            </div>
+            <span>Slow Mode</span>
+            <div class="switch-wrapper">
+                <label class="switch">
+                    <input type="checkbox" id="dark-mode-toggle" name="dark-mode">
+                    <span class="slider"></span>
+                </label>
+                <span class="tooltip-text">눈 버려요😉</span>
+            </div>
+            <span>Dark Mode</span>
+        </div>
+        <button onclick="startQuiz()">Start Quiz</button>
+        <a href="https://forms.gle/ENjGnYV6tt82P7k79    ">Report</a>
     </div>
+    <div id="quiz-section" style="display:none;">
+        <div id="chapter-title"></div>
+        <div id="progress-text"></div>
+        <div class="timer-container">
+            <span id="timer-display">00:00</span>
+        </div>
+        <div class="progress-bar">
+            <div id="progress-bar-fill" class="progress-bar-fill"></div>
+        </div>
+        <div id="question"></div>
+        <div id="translation" style="margin-bottom: 10px;"></div>
+        <input type="text" id="answer" placeholder="Type your answer here" onkeydown="if (event.key === 'Enter') submitAnswer()">
+        <button onclick="submitAnswer()">Submit</button>
+        <div id="feedback"></div>
+        <button id="next-button" onclick="displayQuestion()" style="display: none;">Next Question</button>
+        <button id="return-button" onclick="returnToMain()">Return to Main Menu</button>
+    </div>
+
+    <script>
+        let questionQueue = [];
+        let correctAnswers = 0;
+        let totalQuestions = 0;
+        let slowMode = false;
+        let selectedChapters = [];
+        let waittime = 1500;
+
+        function startQuiz() {
+            slowMode = document.getElementById('slow-mode').checked;
+            selectedChapters = Array.from(document.querySelectorAll('input[name="chapter"]:checked')).map(cb => parseInt(cb.value));
+            loadQuestions(selectedChapters);
+            startTimer(); // Start the timer when the quiz starts
+        }
+
+        function loadQuestions(selectedChapters) {
+            const promises = selectedChapters.map(chapter => fetch(`chapter${chapter}.csv`).then(response => {
+                if (!response.ok) {
+                    console.warn(`Failed to load chapter ${chapter}.`);
+                    return '';
+                }
+                return response.text();
+            }));
+            Promise.all(promises).then(data => {
+                questionQueue = data.flatMap(csv => parseCSV(csv)).filter(q => q.sentence && q.translation && q.answer);
+                totalQuestions = questionQueue.length;
+
+                if (totalQuestions === 0) {
+                    alert("Please select at least one chapter to start the quiz.");
+                    return;
+                }
+
+                document.getElementById("quiz-section").style.display = "block";
+                document.getElementById("chapter-selection").style.display = "none";
+                document.getElementById("chapter-title").innerText = `Selected Chapters: ${selectedChapters.join(', ')}`;
+                updateProgress();
+                displayQuestion();
+            }).catch(error => {
+                alert("An error occurred while loading questions. Please try again.");
+                console.error(error);
+            });
+        }
+
+        function parseCSV(csv) {
+            const lines = csv.split('\n');
+            return lines.map(line => {
+                const lastSlashIndex = line.lastIndexOf('/');
+                const sentenceAndTranslation = line.slice(0, lastSlashIndex).trim();
+                const answer = line.slice(lastSlashIndex + 1).trim();
+                const lastSentenceSlashIndex = sentenceAndTranslation.lastIndexOf('/');
+                const sentence = sentenceAndTranslation.slice(0, lastSentenceSlashIndex).trim();
+                const translation = sentenceAndTranslation.slice(lastSentenceSlashIndex + 1).trim();
+                if (sentence && translation && answer) {
+                    return { sentence, translation, answer };
+                }
+                return null;
+            }).filter(q => q !== null);
+        }
+
+        function getRandomQuestion() {
+            if (questionQueue.length === 0) {
+                document.getElementById("question").innerText = "Quiz completed! Well done!\nTime Taken: " + document.getElementById("timer-display").textContent+"\n Credit 1-3 김부릉 백승우\n Bug Finder 고재관 최리아"
+                document.getElementById("translation").innerText = "";
+                document.getElementById("answer").style.display = "none";
+                document.querySelector("button[onclick='submitAnswer()']").style.display = "none";
+                document.getElementById("return-button").style.display = "block";
+                stopTimer(); // Stop the timer when the quiz is completed
+                return null;
+            }
+            const randomIndex = Math.floor(Math.random() * questionQueue.length);
+            return questionQueue[randomIndex];
+        }
+
+        function updateProgress() {
+            document.getElementById("progress-text").innerText = `Correct: ${correctAnswers} / ${totalQuestions}`;
+            const progressPercentage = (correctAnswers / totalQuestions) * 100;
+            document.getElementById("progress-bar-fill").style.width = `${progressPercentage}%`;
+        }
+
+        function displayQuestion() {
+            const question = getRandomQuestion();
+            document.getElementById("feedback").innerText = "";
+            document.getElementById("answer").value = "";
+            if (question) {
+                document.getElementById("question").innerText = question.sentence;
+                document.getElementById("translation").innerText = question.translation;
+                if (slowMode) {
+                    document.getElementById("next-button").style.display = "block";
+                } else {
+                    document.getElementById("next-button").style.display = "none";
+                }
+            }
+        }
+
+        function submitAnswer() {
+            const userAnswer = document.getElementById("answer").value.trim().toLowerCase();
+            const currentQuestion = questionQueue.find(q => q.sentence === document.getElementById("question").innerText);
+
+            if (userAnswer === currentQuestion.answer.toLowerCase()) {
+                correctAnswers++;
+                questionQueue = questionQueue.filter(q => q.sentence !== currentQuestion.sentence);
+                document.getElementById("feedback").innerText = "Correct!";
+            } else {
+                document.getElementById("feedback").innerText = `Wrong! Answer was: ✨${currentQuestion.answer}✨`;
+            }
+            updateProgress();
+            document.getElementById("answer").value = "";
+
+            if (slowMode) {
+                document.getElementById("feedback").innerText += " \nClick 'Next Question' to proceed.";
+            } else {
+                setTimeout(() => {
+                    document.getElementById("feedback").innerText = "";
+                    displayQuestion();
+                }, waittime);
+            }
+        }
+
+        function returnToMain() {
+            document.getElementById("quiz-section").style.display = "none";
+            document.getElementById("chapter-selection").style.display = "block";
+            correctAnswers = 0;
+            questionQueue = [];
+            totalQuestions = 0;
+            updateProgress();
+            document.getElementById("return-button").style.display = "none";
+            document.getElementById("answer").style.display = "block";
+            document.querySelector("button[onclick='submitAnswer()']").style.display = "block";
+            stopTimer(); // Stop and reset the timer
+        }
+
+        document.getElementById('dark-mode-toggle').addEventListener('change', function() {
+            if (this.checked) {
+                document.body.classList.add('dark-mode');
+            } else {
+                document.body.classList.remove('dark-mode');
+            }
+        });
+
+
+        let timerInterval;
+        let secondsElapsed = 0;
+            
+        function startTimer() {
+            const timerDisplay = document.getElementById("timer-display");
+            // Clear any existing interval to avoid overlap
+            clearInterval(timerInterval);
+            secondsElapsed = 0;  // Reset timer to zero
+            timerInterval = setInterval(() => {
+                secondsElapsed++;
+                const minutes = Math.floor(secondsElapsed / 60);
+                const seconds = secondsElapsed % 60;
+                timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);  // Update every 1000 milliseconds (1 second)
+        }
+
+        
+        function stopTimer() {
+            clearInterval(timerInterval);
+            secondsElapsed = 0;
+            document.getElementById("timer-display").textContent = "00:00";
+        }
+
+        // Initialize slider for waittime adjustment
+        const waittimeSlider = document.getElementById('waittime-slider');
+        const waittimeDisplay = document.getElementById('waittime-display');
+
+        // Set initial waittime value
+        waittime = parseInt(waittimeSlider.value, 10);
+
+        // Update waittime value on slider input
+        waittimeSlider.addEventListener('input', () => {
+            waittime = parseInt(waittimeSlider.value, 10);
+            waittimeDisplay.textContent = `${waittime} ms`;
+            console.log(`Waittime updated to: ${waittime} ms`);
+        });
+
+
+    </script>
 </body>
 </html>
